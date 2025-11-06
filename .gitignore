@@ -1,0 +1,41 @@
+.venv
+media/*
+*/__pycache__
+.env
+static/*
+/_project_/settings/__pycache__
+/core/migrations/__pycache__
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Unit test / coverage reports
+.coverage
+.pytest_cache/
+
+# IDEs and editors
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+
+# Local sqlite DB
+db.sqlite3
+
