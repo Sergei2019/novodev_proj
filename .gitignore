@@ -39,3 +39,4 @@ node_modules/
 # Local sqlite DB
 db.sqlite3
 
+*.txt
