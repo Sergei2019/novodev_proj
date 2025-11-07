@@ -22,5 +22,17 @@ class NewsAdmin(admin.ModelAdmin):
     list_filter = ("title", "tags", "category", "tags")
     empty_value_display = "-пусто-"
 
+class AnnouncementAdmin(admin.ModelAdmin):
+    search_fields = ("user", "title", "category", "price")
+    list_filter = ("user", "title", "category", "price")
+    empty_value_display = "-пусто-"
+
+class EventAdmin(admin.ModelAdmin):
+    search_fields = ("title", "date_time", "location")
+    empty_value_display = "-пусто-"
+
+
 admin.site.register(Tag, TagAdmin)
 admin.site.register(News, NewsAdmin)
+admin.site.register(Announcement, AnnouncementAdmin)
+admin.site.register(Event, EventAdmin)
