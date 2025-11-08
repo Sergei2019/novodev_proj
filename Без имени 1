@@ -1,5 +1,11 @@
 curl -X POST http://127.0.0.1:8000/api/auth/token/login/ --data 'email=test1@example.com&password=testpassword12312'
 
+curl -X POST http://127.0.0.1:8000/api/subscribe/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "newuser@example.com"
+  }' -H 'Authorization: Token 78a6e457396cb22464234c02d08e417f52022c44'
 
 curl -LX GET http://127.0.0.1:8000/api/auth/users/me/ -H 'Authorization: Token 26ad1d90c3dc51bf0fb38f5dfe1fceb3c15bf030'
 
+curl -X POST http://127.0.0.1:8000/api/auth/token/logout/ --data '26ad1d90c3dc51bf0fb38f5dfe1fceb3c15bf030' -H 'Authorization: Token 26ad1d90c3dc51bf0fb38f5dfe1fceb3c15bf030'
