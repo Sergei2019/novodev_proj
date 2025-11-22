@@ -11,21 +11,35 @@ class NewsCategory(models.Model):
 
     def __str__(self):
         return self.name
+    
+class EventCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True, verbose_name="Категория мероприятия")
+
+    class Meta:
+        verbose_name = "Категория мероприятия"
+        verbose_name_plural = "Категории мероприятия"
+
+    def __str__(self):
+        return self.name
+
 
 
 class News(models.Model):
     title = models.CharField(max_length=255, verbose_name="Заголовок")
     content = models.TextField(verbose_name="Текст новости")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
-    is_important = models.BooleanField(default=False, verbose_name="Важное объявление")
+    image = models.ImageField(upload_to='news_images/', blank=True, null=True, verbose_name="Фото")
+    published_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     tags = models.ManyToManyField('Tag', blank=True, verbose_name="Теги")
     views_count = models.PositiveIntegerField(default=0, verbose_name="Количество просмотров")
+    short_description = models.CharField(verbose_name="Текст новости")
     category = models.ForeignKey(NewsCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Рубрика")
+    top = models.BooleanField(default=False, verbose_name='топовые новости')
+
 
     class Meta:
         verbose_name = "Новость"
         verbose_name_plural = "Новости"
-        ordering = ['-created_at']
+        ordering = ['-published_date']
 
     def __str__(self):
         return self.title
@@ -89,9 +103,12 @@ class Event(models.Model):
     description = models.TextField(verbose_name="Описание")
     date_time = models.DateTimeField(verbose_name="Дата и время")
     location = models.CharField(max_length=255, verbose_name="Место проведения")
+    lat = models.FloatField(verbose_name="Широта")
+    lng = models.FloatField(verbose_name="Долгота")
     image = models.ImageField(upload_to='events/', blank=True, null=True, verbose_name="Изображение")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-
+    category = models.ForeignKey(EventCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Категория мероприятия")
+    
     class Meta:
         verbose_name = "Мероприятие"
         verbose_name_plural = "Мероприятия"
@@ -99,19 +116,81 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
-    
+
+
+class Organization(models.Model):
+    title = models.CharField(max_length=255, verbose_name="Название организации")
+    price = models.FloatField()
+    grafik_raboty = models.TextField(verbose_name="График работы")
+    description = models.TextField(verbose_name="Описание")
+    phone_number = models.CharField(verbose_name="Телефон")
+
+    class Meta:
+        verbose_name = "Организация"
+        verbose_name_plural = "Организации"
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
+
+
+class Vacancy(models.Model):
+    title = models.CharField(max_length=255, verbose_name="Название вакансии")
+    price = models.IntegerField()
+    grafik_raboty = models.TextField(verbose_name="График работы")
+    description = models.TextField(verbose_name="Описание")
+    phone_number = models.CharField(verbose_name="Телефон")
+    email = models.EmailField(max_length=254)
+
+    class Meta:
+        verbose_name = "Вакансия"
+        verbose_name_plural = "Вакансия"
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
+
 
 class MapPoint(models.Model):
-    name = models.CharField(max_length=255, verbose_name="Название")
+    title = models.CharField(max_length=255, verbose_name="Название")
     description = models.TextField(blank=True, verbose_name="Описание")
-    latitude = models.FloatField(verbose_name="Широта")
-    longitude = models.FloatField(verbose_name="Долгота")
+    lat = models.FloatField(verbose_name="Широта")
+    lng = models.FloatField(verbose_name="Долгота")
     category = models.CharField(max_length=100, blank=True, verbose_name="Категория (школа, магазин и т.п.)")
     image = models.ImageField(upload_to='map_points/', blank=True, null=True, verbose_name="Фото")
+    type = models.CharField(default=None, verbose_name="тип")
 
     class Meta:
         verbose_name = "Точка на карте"
         verbose_name_plural = "Точки на карте"
 
     def __str__(self):
-        return self.name
+        return self.title
+
+
+class Attractions(models.Model):
+    title = models.CharField(max_length=255, verbose_name="Название")
+    content = models.TextField(blank=True, verbose_name="Полное описание")
+    lat = models.FloatField(verbose_name="Широта")
+    lng = models.FloatField(verbose_name="Долгота")
+    short_description = models.TextField(blank=True, verbose_name="Краткое описание")
+
+    class Meta:
+        verbose_name = "Достопримечательность"
+        verbose_name_plural = "Достопримечательности"
+
+    def __str__(self):
+        return self.title
+
+class AttractionImage(models.Model):
+    attraction = models.ForeignKey(Attractions, related_name='images', on_delete=models.CASCADE, verbose_name="Достопримечательность")
+    image = models.ImageField(upload_to='attractions/', verbose_name="Фото")
+    order = models.PositiveIntegerField(default=0, verbose_name="Порядок") 
+
+    class Meta:
+        verbose_name = "Изображение достопримечательности"
+        verbose_name_plural = "Изображения достопримечательностей"
+        ordering = ['order'] 
+
+    def __str__(self):
+        return f"Фото для {self.attraction.title}"

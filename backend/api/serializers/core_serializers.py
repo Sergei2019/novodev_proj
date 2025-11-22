@@ -7,7 +7,9 @@ from core.models import (News,
                          Tag,
                          Post,
                          Topic,
-                         NewsCategory)
+                         NewsCategory,
+                         Attractions,
+                         AttractionImage)
 from ..serializers.user_serializers import UserSerializer
 
 
@@ -58,3 +60,15 @@ class TopicSerializer(serializers.ModelSerializer):
         model = Topic
         fields = '__all__'
         read_only_fields = ['author']
+
+class AttractionImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AttractionImage
+        fields = ['id', 'image', 'order']
+
+class AttractionsSerializer(serializers.ModelSerializer):
+    images = AttractionImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Attractions
+        fields = '__all__'
