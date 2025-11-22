@@ -8,8 +8,12 @@ from core.models import (News,
                          Post,
                          Topic,
                          NewsCategory,
+                         Gallery,
+                         FeedBack,
                          Attractions,
-                         AttractionImage)
+                         AttractionImage,
+                         Organization,
+                         Vacancy)
 from ..serializers.user_serializers import UserSerializer
 
 
@@ -41,6 +45,26 @@ class MapPointSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
+        fields = '__all__'
+
+class GallerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gallery
+        fields = '__all__'
+
+class FeedBackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeedBack
+        fields = '__all__'
+
+class OrgSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = '__all__'
+
+class VacancySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vacancy
         fields = '__all__'
 
 class PostSerializer(serializers.ModelSerializer):

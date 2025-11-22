@@ -194,3 +194,27 @@ class AttractionImage(models.Model):
 
     def __str__(self):
         return f"Фото для {self.attraction.title}"
+    
+
+class Gallery(models.Model):
+    image = models.URLField(max_length=255)
+    photo_thumbnail = models.ImageField(verbose_name="Миниатюра", upload_to="gallery/photos/thumbnails/", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Галерея"
+
+    def __str__(self):
+        return f"Галерея"
+    
+
+class FeedBack(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Имя")
+    email = models.EmailField(max_length=254)
+    message = models.TextField(blank=True, verbose_name="Сообщение")
+
+    class Meta:
+        verbose_name = "Фидбек"
+        verbose_name_plural = "Фидбек"
+
+    def __str__(self):
+        return f"фидбек от {self.email} {self.name}"
