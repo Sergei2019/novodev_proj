@@ -1,14 +1,22 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
+from ..filters import AnnouncementFilter, EventFilter
 
-
-from core.models import News, Announcement, Event, MapPoint, Tag
+from core.models import News, Announcement, Event, MapPoint, Gallery, Organization, Vacancy, Attractions
 from ..serializers.core_serializers import (NewsSerializer, 
                                             AnnouncementSerializer, 
                                             EventSerializer, 
                                             MapPointSerializer,
-                                            TagSerializer)
+                                            GallerySerializer,
+                                            FeedBackSerializer,
+                                            OrgSerializer,
+                                            VacancySerializer,
+                                            AttractionsSerializer)
+
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -26,14 +34,20 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
     queryset = Announcement.objects.filter(is_active=True)
     serializer_class = AnnouncementSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    filter_backends = [SearchFilter]
-    filterset_fields = ['category']
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = AnnouncementFilter
     search_fields = ['title', 'description']
+    ordering_fields = ['created_at', 'title']
 
 
 class EventViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = EventFilter
+    search_fields = ['title', 'description']
+    ordering_fields = ['created_at', 'title']
 
 
 class MapPointViewSet(viewsets.ReadOnlyModelViewSet):
@@ -41,8 +55,40 @@ class MapPointViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = MapPointSerializer
 
 
-class TagViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = TagSerializer
-    queryset = Tag.objects.all()
+class GalleryViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = GallerySerializer
+    queryset = Gallery.objects.all()
     permission_classes = (AllowAny,)
-    pagination_class = None
+
+class OrgViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = OrgSerializer
+    queryset = Organization.objects.all()
+    permission_classes = (AllowAny,)
+
+class VacancyViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = VacancySerializer
+    queryset = Vacancy.objects.all()
+    permission_classes = (AllowAny,)
+
+class AttrcationsViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = AttractionsSerializer
+    queryset = Attractions.objects.all()
+    permission_classes = (AllowAny,)
+
+
+@api_view(['POST'])
+def feedbackview(request):
+    serializer = FeedBackSerializer(data=request.data)
+    if serializer.is_valid():
+        try:
+            serializer.save()
+            return Response({
+                "message": "Фидбек отправлен",
+                "email": serializer.data['email']
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({
+                "error": "Произошла ошибка при отправке.",
+                "details": str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..serializers import NewsletterSubscriptionSerializer
 
+
 @api_view(['POST'])
 def subscribe_to_newsletter(request):
     serializer = NewsletterSubscriptionSerializer(data=request.data)
@@ -19,3 +20,5 @@ def subscribe_to_newsletter(request):
                 "details": str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
