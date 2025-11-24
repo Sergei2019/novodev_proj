@@ -202,6 +202,7 @@ class Gallery(models.Model):
 
     class Meta:
         verbose_name = "Галерея"
+        verbose_name_plural = "Галереи изображений"
 
     def __str__(self):
         return f"Галерея"
