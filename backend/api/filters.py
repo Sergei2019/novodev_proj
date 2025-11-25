@@ -11,8 +11,18 @@ class NewsFilter(django_filters.FilterSet):
         model = News
         fields = ['category', 'start_date', 'end_date']
 
+    def filter_search(self, queryset, name, value):
+        if value:
+            return queryset.filter(
+                models.Q(title__icontains=value) |
+                models.Q(content__icontains=value)
+            )
+        return queryset
+
 class EventFilter(django_filters.FilterSet):
     search = django_filters.CharFilter(method='filter_search')
+    date_start = django_filters.DateTimeFilter(field_name='date_time', lookup_expr='gte')
+    date_end = django_filters.DateTimeFilter(field_name='date_time', lookup_expr='lte')
     category_id = django_filters.NumberFilter(field_name='category__id')
     class Meta:
         model = Event
