@@ -1,6 +1,7 @@
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 from .views import *
+from users.views import telegram_auth
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 router = DefaultRouter()
@@ -19,6 +20,7 @@ router.register(r'attractions', AttrcationsViewSet)
 urlpatterns = [
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
+    path('auth/telegram/', telegram_auth, name='telegram-auth'),
     path('', include(router.urls)),
     path('subscribe/', subscribe_to_newsletter, name='subscribe-newsletter'),
     path('feedback/', feedbackview, name='feedbackview'),
