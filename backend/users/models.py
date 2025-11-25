@@ -9,3 +9,12 @@ class User(AbstractUser):
     email = models.EmailField(_("E-mail"), max_length=254, unique=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ("username", "first_name", "last_name")
+
+
+class TelegramUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='telegram_user')
+    telegram_id = models.BigIntegerField(unique=True, verbose_name="Telegram ID")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} (TG: {self.telegram_id})"
